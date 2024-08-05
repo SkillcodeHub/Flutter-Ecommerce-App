@@ -1,6 +1,8 @@
 import 'package:ecommerce/Res/colors.dart';
 import 'package:ecommerce/Utils/Routes/routes.dart';
 import 'package:ecommerce/Utils/Routes/routes_name.dart';
+import 'package:ecommerce/View_Model/AllProductList_View_Model/allProductList_view_model.dart';
+import 'package:ecommerce/View_Model/AllProductList_View_Model/filterProductList_view_model.dart';
 import 'package:ecommerce/View_Model/Auth_View_Model/Login_View_Model/login_view_model.dart';
 import 'package:ecommerce/View_Model/CartList_View_Model/addcart_view_model.dart';
 import 'package:ecommerce/View_Model/CartList_View_Model/cartList_view_model.dart';
@@ -68,6 +70,10 @@ class MyApp extends StatelessWidget {
             value: OrderdetailbyorderedproductViewmodel()),
         ChangeNotifierProvider<WishListViewmodel>.value(
             value: WishListViewmodel()),
+        ChangeNotifierProvider<AllProductListViewmodel>.value(
+            value: AllProductListViewmodel()),
+        ChangeNotifierProvider<FilterProductListViewmodel>.value(
+            value: FilterProductListViewmodel()),
       ],
       child: Sizer(
         builder: (context, orientation, deviceType) {

@@ -1,6 +1,17 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:ecommerce/Data/Response/status.dart';
+import 'package:ecommerce/Utils/Widgets/errorScreen_widget.dart';
+import 'package:ecommerce/Utils/utils.dart';
 import 'package:ecommerce/View/Bag/BagScreen/filterScreen.dart';
+import 'package:ecommerce/View_Model/AllProductList_View_Model/allProductList_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+
+import '../../../Model/AllProductList_Model/allProductList_model.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -10,6 +21,17 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
+  List<Map<String, dynamic>> filteredProducts = [];
+  late Future<void> fetchDataFuture;
+  String clientId = ClientId;
+  String ipAddress = IpAddress;
+
+  @override
+  void initState() {
+    super.initState();
+    filteredProducts = products;
+  }
+
   List<String> categories = [
     'T-shirts',
     'Crop tops',
@@ -119,14 +141,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
     },
   ];
 
-  List<Map<String, dynamic>> filteredProducts = [];
   String selectedPriceFilter = 'All';
-
-  @override
-  void initState() {
-    super.initState();
-    filteredProducts = products;
-  }
 
   void showPriceFilterBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -182,8 +197,20 @@ class _ProductListScreenState extends State<ProductListScreen> {
     );
   }
 
+  Future<void> fetchData() async {
+    Timer(Duration(microseconds: 20), () {
+      final allProductListViewmodel =
+          Provider.of<AllProductListViewmodel>(context, listen: false);
+      allProductListViewmodel.fetchAllProductListApi(
+          clientId.toString(), ipAddress.toString());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final allProductListViewmodel =
+        Provider.of<AllProductListViewmodel>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -199,94 +226,166 @@ class _ProductListScreenState extends State<ProductListScreen> {
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 50,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Chip(
-                    label: Text(categories[index]),
-                  ),
-                );
-              },
-            ),
-          ),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FilterScreen()),
-                );
-              },
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.filter_list),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => FilterScreen()),
-                      );
-                    },
-                  ),
-                  Text(
-                    "Filters",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
+      body: FutureBuilder<void>(
+        future: fetchDataFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error occurred: ${snapshot.error}'));
+          } else {
+            return ChangeNotifierProvider<AllProductListViewmodel>.value(
+              value: allProductListViewmodel,
+              child: Consumer<AllProductListViewmodel>(
+                builder: (context, value, _) {
+                  switch (value.allProductList.status!) {
+                    case Status.LOADING:
+                      return Center(child: CircularProgressIndicator());
+                    case Status.ERROR:
+                      return handleError(value);
+                    case Status.COMPLETED:
+                      return buildCompletedUI(allProductListViewmodel, context);
+                  }
+                },
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget handleError(AllProductListViewmodel value) {
+    String? message;
+    if (value.allProductList.message != "No Internet Connection") {
+      String jsonString = value.allProductList.message.toString();
+      int startIndex = jsonString.indexOf('{');
+      int endIndex = jsonString.lastIndexOf('}');
+      String jsonSubstring = jsonString.substring(startIndex, endIndex + 1);
+      Map<String, dynamic> jsonResponse = json.decode(jsonSubstring);
+      message = jsonResponse['message'];
+    }
+    return value.allProductList.message == "No Internet Connection"
+        ? ErrorScreenWidget(
+            onRefresh: () async {},
+            loadingText: value.allProductList.message.toString(),
+          )
+        : Text('data');
+  }
+
+  Widget buildCompletedUI(
+      AllProductListViewmodel allProductListViewmodel, BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        // Implement refresh logic here
+      },
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 50,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Chip(
+                      label: Text(categories[index]),
+                    ),
+                  );
+                },
               ),
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.filter_list),
-                    onPressed: () {
-                      showPriceFilterBottomSheet(context);
-                    },
-                  ),
-                  Text(
-                    selectedPriceFilter,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FilterScreen()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.filter_list),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FilterScreen()),
+                        );
+                      },
+                    ),
+                    Text(
+                      "Filters",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.filter_list),
+                      onPressed: () {
+                        showPriceFilterBottomSheet(context);
+                      },
+                    ),
+                    Text(
+                      selectedPriceFilter,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
+            Expanded(
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.7,
+                ),
+                itemCount: allProductListViewmodel
+                    .allProductList.data!.productList!.length,
+                itemBuilder: (context, index) {
+                  return ProductCard(
+                    product: allProductListViewmodel
+                        .allProductList.data!.productList![index],
+                  );
+                },
               ),
             ),
-          ]),
-          Expanded(
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.7,
-              ),
-              itemCount: filteredProducts.length,
-              itemBuilder: (context, index) {
-                return ProductCard(
-                  product: filteredProducts[index],
-                );
-              },
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class ProductCard extends StatelessWidget {
-  final Map<String, dynamic> product;
+class ProductCard extends StatefulWidget {
+  final ProductList product;
 
   const ProductCard({Key? key, required this.product}) : super(key: key);
 
   @override
+  State<ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  List<String> imageUrls = [];
+
+  @override
   Widget build(BuildContext context) {
+    imageUrls = List<String>.from(
+        json.decode(widget.product.productGallery.toString()));
+
+    String convertLocalhost(String url) {
+      return url.replaceAll('http://localhost', 'http://10.0.2.2');
+    }
+
     return InkWell(
       onTap: () {
         // Navigator.push(context,
@@ -298,11 +397,14 @@ class ProductCard extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Image.asset(
-                  product['imageUrl'],
-                  height: 190,
-                  width: double.infinity,
+                Image.network(
+                  convertLocalhost(imageUrls[0])
+                  // 'http://10.0.2.2:8000/media/media/processed_71JAtYR3tLL._SY741_.jpg',
+                  ,
+                  // widget.imageUrl,
+                  // height: 24.h,
                   fit: BoxFit.cover,
+                  width: double.infinity,
                 ),
                 Positioned(
                   right: 8,
@@ -326,7 +428,7 @@ class ProductCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (product['discountPercentage'] > 0)
+                if (widget.product.discountedPercentage.toInt() > 0)
                   Positioned(
                     top: 8,
                     left: 8,
@@ -334,7 +436,7 @@ class ProductCard extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       color: Colors.red,
                       child: Text(
-                        '${product['discountPercentage']}% OFF',
+                        '${widget.product.discountedPercentage}% OFF',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -350,7 +452,7 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product['name'],
+                    widget.product.productName.toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -363,15 +465,15 @@ class ProductCard extends StatelessWidget {
                         size: 2.h,
                       ),
                       Text(
-                        '${product['price'].toStringAsFixed(2)}',
+                        '${widget.product.saleStartsAt}',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
                       ),
-                      if (product['discountPercentage'] > 0)
+                      if (widget.product.discountedPercentage.toInt() > 0)
                         Text(
-                          ' (${product['discountPercentage']}% off)',
+                          ' (${widget.product.discountedPercentage}% off)',
                           style: TextStyle(
                             color: Colors.red,
                             fontSize: 12,
@@ -383,9 +485,7 @@ class ProductCard extends StatelessWidget {
                     children: List.generate(
                       5,
                       (index) => Icon(
-                        index < product['rating']
-                            ? Icons.star
-                            : Icons.star_border,
+                        index < 3 ? Icons.star : Icons.star_border,
                         size: 16,
                         color: Colors.yellow,
                       ),
