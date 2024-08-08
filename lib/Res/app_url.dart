@@ -1,7 +1,9 @@
 class AppUrl {
   //Base Url
   // http://localhost:6000/api/
-  static var baseUrl = "http://10.0.2.2:8000/";
+  // static var baseUrl = "http://10.0.2.2:8000/";
+  static var baseUrl =
+      "https://3545-2402-a00-142-4b45-214d-52ed-f094-95a5.ngrok-free.app/";
 
   // static var baseUrl = "https://www.axonweb.in/api/";
   // static var baseUrl = "http://18.188.250.51:7000/api/cms/";
