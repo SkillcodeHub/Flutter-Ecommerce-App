@@ -176,7 +176,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
     final List<String> _productImages = decodedList.cast<String>();
     String convertLocalhost(String url) {
-      return url.replaceAll('http://localhost', 'http://10.0.2.2');
+      return url.replaceAll('http://localhost:8000', ngrokUrl);
     }
 
     return SizedBox(
@@ -965,7 +965,7 @@ class _SizeDetailsCardState extends State<SizeDetailsCard> {
   }
 
   String convertLocalhost(String url) {
-    return url.replaceAll('http://localhost', 'http://10.0.2.2');
+    return url.replaceAll('http://localhost:8000', ngrokUrl);
   }
 
   bool isQualityRuleApplied() {

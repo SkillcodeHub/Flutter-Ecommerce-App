@@ -261,7 +261,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   String convertLocalhost(String url) {
-    return url.replaceAll('http://localhost', 'http://10.0.2.2');
+    return url.replaceAll('http://localhost:8000', ngrokUrl);
   }
 
   @override

@@ -1391,7 +1391,7 @@ class _ProductCardState extends State<ProductCard> {
     print(imageUrls[0]);
     print('imageUrls[0])imageUrls[0])imageUrls[0])imageUrls[0]');
     String convertLocalhost(String url) {
-      return url.replaceAll('http://localhost', 'http://10.0.2.2');
+      return url.replaceAll('http://localhost:8000', ngrokUrl);
     }
 
     return InkWell(
@@ -1421,7 +1421,12 @@ class _ProductCardState extends State<ProductCard> {
                   topRight: Radius.circular(8),
                 ),
                 child: Image.network(
-                  convertLocalhost(imageUrls[0])
+                  convertLocalhost(
+                    imageUrls[0]
+                    // 'https://5d70-2402-a00-142-4b45-214d-52ed-f094-95a5.ngrok-free.app/media/media/MANGO%20LOGO%20VECTOR_cHJiyMF.jpeg'
+                  )
+
+
                   // 'http://10.0.2.2:8000/media/media/processed_71JAtYR3tLL._SY741_.jpg',
                   ,
                   // widget.imageUrl,
@@ -1838,7 +1843,7 @@ class _SmallImageCardState extends State<SmallImageCard> {
     print(imageUrls[0]);
     print('imageUrls[0])imageUrls[0])imageUrls[0])imageUrls[0]');
     String convertLocalhost(String url) {
-      return url.replaceAll('http://localhost', 'http://10.0.2.2');
+      return url.replaceAll('http://localhost:8000', ngrokUrl);
     }
 
     return InkWell(
