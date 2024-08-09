@@ -63,8 +63,19 @@ class AppUrl {
 
   // add user ratings Url
   static var adduserratingsUrl = baseUrl + 'customerportal/adduserratings';
-  // add user ratings Url
+  // add cart Url
   static var addCartUrl = baseUrl + 'customerportal/addcart';
+
+  // delete cart Url
+  static var deleteCartUrl = baseUrl + 'customerportal/deletecart';
+
+    // delete Wish List Url
+  static var deleteWishListUrl = baseUrl + 'customerportal/deletewishlist';
+
+    // add Wish List Url
+  static var addWishListUrl = baseUrl + 'customerportal/addwishlist';
+
+
 
   // All Product List Url
   static var allProductListUrl = baseUrl + 'customerportal/allproductlist';

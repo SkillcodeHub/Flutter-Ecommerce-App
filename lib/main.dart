@@ -6,6 +6,7 @@ import 'package:ecommerce/View_Model/AllProductList_View_Model/filterProductList
 import 'package:ecommerce/View_Model/Auth_View_Model/Login_View_Model/login_view_model.dart';
 import 'package:ecommerce/View_Model/CartList_View_Model/addcart_view_model.dart';
 import 'package:ecommerce/View_Model/CartList_View_Model/cartList_view_model.dart';
+import 'package:ecommerce/View_Model/CartList_View_Model/deleteCart_view_model.dart';
 import 'package:ecommerce/View_Model/FeaturedProductList_View_Model/featuredProductList_view_model.dart';
 import 'package:ecommerce/View_Model/ProductDetailById_View_Model/productDetailById_view_model.dart';
 import 'package:ecommerce/View_Model/Profile_View_Model/CustomerAddresses_View_Model/addcustomerAddress_view_model.dart';
@@ -19,6 +20,8 @@ import 'package:ecommerce/View_Model/Profile_View_Model/PrivacyPolicy_View_Model
 import 'package:ecommerce/View_Model/Profile_View_Model/RefundPolicy_View_Model/refundPolicy_view_model.dart';
 import 'package:ecommerce/View_Model/Profile_View_Model/ReturnPolicy_View_Model/returnPolicy_view_model.dart';
 import 'package:ecommerce/View_Model/Profile_View_Model/TermsAndConditions_View_Model/termsandconditions_view_model.dart';
+import 'package:ecommerce/View_Model/WishList_View_Model/addWishList_view_model.dart';
+import 'package:ecommerce/View_Model/WishList_View_Model/deleteWishList_view_model.dart';
 import 'package:ecommerce/View_Model/WishList_View_Model/wishList_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -45,6 +48,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EditCustomerDetailsViewModel()),
         ChangeNotifierProvider(create: (_) => AddProductRatingsViewModel()),
         ChangeNotifierProvider(create: (_) => AddCartViewModel()),
+        ChangeNotifierProvider(create: (_) => DeleteWishListViewModel()),
+        ChangeNotifierProvider(create: (_) => AddWishListViewModel()),
+                ChangeNotifierProvider(create: (_) => DeleteCartViewModel
+()),
+
         // ChangeNotifierProvider(create: (_) => ProductAttributeProvider()),
         ChangeNotifierProvider<FeaturedProductListViewmodel>.value(
             value: FeaturedProductListViewmodel()),

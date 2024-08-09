@@ -7,6 +7,7 @@ import 'package:ecommerce/Utils/utils.dart';
 import 'package:ecommerce/View/Shop/ShopScreen/filterProductScreen.dart';
 import 'package:ecommerce/View/Shop/ShopScreen/productDetailScreen.dart';
 import 'package:ecommerce/View_Model/AllProductList_View_Model/allProductList_view_model.dart';
+import 'package:ecommerce/View_Model/WishList_View_Model/addWishList_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
@@ -241,8 +242,19 @@ class _ProductCardState extends State<ProductCard> {
                           size: 20,
                         ),
                         onPressed: () {
-                          // Handle favorite button press
-                        },
+                  Map<String, String> data = {
+                    'clientId': ClientId,
+                    'customerId': CustomerId,
+                    'productId': widget.product.id.toString(),
+                    'created_by': '',
+                  };
+
+
+                  final addWishListViewModel =
+                      Provider.of<AddWishListViewModel>(context, listen: false);
+
+                  addWishListViewModel.addWishListApi(
+                      IpAddress.toString(), data, context);                                              },
                         padding: EdgeInsets.zero,
                         constraints: BoxConstraints(),
                       ),

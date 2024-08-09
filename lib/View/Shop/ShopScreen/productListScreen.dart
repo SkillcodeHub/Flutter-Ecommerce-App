@@ -6,6 +6,7 @@ import 'package:ecommerce/Utils/Widgets/errorScreen_widget.dart';
 import 'package:ecommerce/Utils/utils.dart';
 import 'package:ecommerce/View/Bag/BagScreen/filterScreen.dart';
 import 'package:ecommerce/View_Model/AllProductList_View_Model/allProductList_view_model.dart';
+import 'package:ecommerce/View_Model/WishList_View_Model/addWishList_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
@@ -421,8 +422,11 @@ class _ProductCardState extends State<ProductCard> {
                         size: 2.h,
                       ),
                       onPressed: () {
-                        // Handle favorite button press
-                      },
+                        setState(() {
+                                           
+                        });
+
+},
                       padding: EdgeInsets.zero,
                       constraints: BoxConstraints(),
                     ),

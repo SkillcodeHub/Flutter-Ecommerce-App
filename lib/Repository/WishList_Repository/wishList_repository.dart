@@ -1,8 +1,8 @@
 import 'package:ecommerce/Model/WishList_Model/wishList_model.dart';
 import 'package:ecommerce/Res/app_url.dart';
 
-import '../../../Data/Network/BaseApiServices.dart';
-import '../../../Data/Network/NetworkApiService.dart';
+import '../../Data/Network/BaseApiServices.dart';
+import '../../Data/Network/NetworkApiService.dart';
 
 class WishListRepository {
   BaseApiServices _apiServices = NetworkApiService();

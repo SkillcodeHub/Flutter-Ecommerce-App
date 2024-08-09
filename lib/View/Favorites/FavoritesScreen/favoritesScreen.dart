@@ -5,6 +5,7 @@ import 'package:ecommerce/Data/Response/status.dart';
 import 'package:ecommerce/Res/colors.dart';
 import 'package:ecommerce/Utils/Widgets/errorScreen_widget.dart';
 import 'package:ecommerce/Utils/utils.dart';
+import 'package:ecommerce/View_Model/WishList_View_Model/deleteWishList_view_model.dart';
 import 'package:ecommerce/View_Model/WishList_View_Model/wishList_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -186,7 +187,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 0.55,
+        childAspectRatio: 0.60,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
       ),
@@ -208,6 +209,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             : 'https://example.com/placeholder.jpg'; // Use a placeholder if no image is available
 
         return WishlistItem(
+          wishId : item.id.toString(),
           brand: item.clientDetails!.companyName.toString(),
           name: item.productDetails!.productName.toString(),
           price: item.productDetails!.productPrice.toString(),
@@ -229,6 +231,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 }
 
 class WishlistItem extends StatelessWidget {
+    final String wishId;
   final String brand;
   final String name;
   final String price;
@@ -238,6 +241,7 @@ class WishlistItem extends StatelessWidget {
 
   const WishlistItem({
     Key? key,
+    required this.wishId,
     required this.brand,
     required this.name,
     required this.price,
@@ -252,7 +256,7 @@ class WishlistItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
+      // elevation: 2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -260,36 +264,39 @@ class WishlistItem extends StatelessWidget {
             children: [
               Container(
                 width: double.infinity,
-                height: 24.h,
+                height: 20.h,
                 child: Image.network(
                   convertLocalhost(imageUrl),
-                  width: 50,
-                  height: 50,
+                  // width: 50,
+                  // height: 50,
                   fit: BoxFit.cover,
                 ),
               ),
-              Positioned(
-                right: 8,
-                bottom: 8,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.favorite,
-                      color: appSecondaryColor,
-                      size: 2.h,
-                    ),
-                    onPressed: () {
-                      // Handle favorite button press
-                    },
-                    padding: EdgeInsets.zero,
-                    constraints: BoxConstraints(),
-                  ),
-                ),
-              ),
+              // Positioned(
+              //   right: 8,
+              //   bottom: 8,
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //       color: Colors.white,
+              //       shape: BoxShape.circle,
+              //     ),
+              //     child: IconButton(
+              //       icon: Icon(
+              //         Icons.favorite,
+              //         color: appSecondaryColor,
+              //         size: 2.h,
+              //       ),
+              //       onPressed: () {
+              //         // Handle favorite button press
+              //       },
+              //       padding: EdgeInsets.zero,
+              //       constraints: BoxConstraints(),
+              //     ),
+              //   ),
+              // ),
+            
+            
+            
             ],
           ),
           Padding(
@@ -337,8 +344,18 @@ class WishlistItem extends StatelessWidget {
                           color: Colors.grey.shade700,
                         ),
                         onPressed: () {
-                          // Handle delete
-                        },
+ Map<String, String> data = {
+                    'clientId': ClientId,
+                    'id': wishId.toString(),
+                    'isDelete': 'Yes',
+                  };
+
+
+                  final deleteWishListViewModel =
+                      Provider.of<DeleteWishListViewModel>(context, listen: false);
+
+                  deleteWishListViewModel.deleteWishListApi(
+                      IpAddress.toString(), data, context);                           },
                         padding: EdgeInsets.zero,
                         constraints: BoxConstraints(),
                       ),

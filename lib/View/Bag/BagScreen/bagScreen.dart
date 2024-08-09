@@ -731,6 +731,7 @@ import 'package:ecommerce/Utils/Widgets/errorScreen_widget.dart';
 import 'package:ecommerce/Utils/utils.dart';
 import 'package:ecommerce/View/Bag/BagScreen/orderConfirmationScreen.dart';
 import 'package:ecommerce/View_Model/CartList_View_Model/cartList_view_model.dart';
+import 'package:ecommerce/View_Model/CartList_View_Model/deleteCart_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
@@ -1099,7 +1100,21 @@ class CartItemWidget extends StatelessWidget {
               alignment: Alignment.topRight,
               child: TextButton(
                 child: Text('Remove'),
-                onPressed: () {},
+                onPressed: () {
+
+                   Map<String, String> data = {
+                    'clientId': ClientId,
+                    'id':item.id.toString() ,
+                    'isDelete': 'Yes',
+                  };
+
+
+                  final deleteCartViewModel =
+                      Provider.of<DeleteCartViewModel>(context, listen: false);
+
+                  deleteCartViewModel.deleteCartApi(
+                      IpAddress.toString(), data, context);   
+                },
               ),
             ),
           ],

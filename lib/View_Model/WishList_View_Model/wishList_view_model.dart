@@ -1,6 +1,6 @@
 import 'package:ecommerce/Data/Response/api_response.dart';
 import 'package:ecommerce/Model/WishList_Model/wishList_model.dart';
-import 'package:ecommerce/Repository/Profile_Repository/WishList_Repository/wishList_repository.dart';
+import 'package:ecommerce/Repository/WishList_Repository/wishList_repository.dart';
 import 'package:flutter/material.dart';
 
 class WishListViewmodel with ChangeNotifier {
