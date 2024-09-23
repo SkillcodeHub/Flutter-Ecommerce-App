@@ -7,6 +7,8 @@ import 'package:ecommerce/View_Model/Auth_View_Model/Login_View_Model/login_view
 import 'package:ecommerce/View_Model/CartList_View_Model/addcart_view_model.dart';
 import 'package:ecommerce/View_Model/CartList_View_Model/cartList_view_model.dart';
 import 'package:ecommerce/View_Model/CartList_View_Model/deleteCart_view_model.dart';
+import 'package:ecommerce/View_Model/CartList_View_Model/editCart_view_model.dart';
+import 'package:ecommerce/View_Model/CheckOfferCouponValidity_View_Model/checkOfferCouponValidity_view_model.dart';
 import 'package:ecommerce/View_Model/FeaturedProductList_View_Model/featuredProductList_view_model.dart';
 import 'package:ecommerce/View_Model/ProductDetailById_View_Model/productDetailById_view_model.dart';
 import 'package:ecommerce/View_Model/Profile_View_Model/CustomerAddresses_View_Model/addcustomerAddress_view_model.dart';
@@ -50,8 +52,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AddCartViewModel()),
         ChangeNotifierProvider(create: (_) => DeleteWishListViewModel()),
         ChangeNotifierProvider(create: (_) => AddWishListViewModel()),
-                ChangeNotifierProvider(create: (_) => DeleteCartViewModel
-()),
+        ChangeNotifierProvider(create: (_) => DeleteCartViewModel()),
+        ChangeNotifierProvider(create: (_) => EditCartViewModel()),
 
         // ChangeNotifierProvider(create: (_) => ProductAttributeProvider()),
         ChangeNotifierProvider<FeaturedProductListViewmodel>.value(
@@ -82,6 +84,8 @@ class MyApp extends StatelessWidget {
             value: AllProductListViewmodel()),
         ChangeNotifierProvider<FilterProductListViewmodel>.value(
             value: FilterProductListViewmodel()),
+        ChangeNotifierProvider<CheckOfferCouponValidityViewmodel>.value(
+            value: CheckOfferCouponValidityViewmodel()),
       ],
       child: Sizer(
         builder: (context, orientation, deviceType) {

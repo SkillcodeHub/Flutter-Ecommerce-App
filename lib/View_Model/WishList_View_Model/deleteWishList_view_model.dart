@@ -18,8 +18,8 @@ class DeleteWishListViewModel with ChangeNotifier {
     setLoading(true);
     await _myRepo.deleteWishListapi(ipAddress, data).then((value) {
       if (value['status'] == true) {
-        Utils.flushBarErrorMessage(
-            value['message'], Duration(seconds: 2), context);
+        // Utils.flushBarErrorMessage(
+        //     value['message'], Duration(seconds: 2), context);
 
         // Navigator.of(context).pop();
         // Navigator.

@@ -8,7 +8,9 @@
 // import 'package:ecommerce/Utils/utils.dart';
 // import 'package:ecommerce/View/Bag/BagScreen/orderConfirmationScreen.dart';
 // import 'package:ecommerce/View_Model/CartList_View_Model/cartList_view_model.dart';
+// import 'package:ecommerce/View_Model/CartList_View_Model/deleteCart_view_model.dart';
 // import 'package:flutter/material.dart';
+// import 'package:nb_utils/nb_utils.dart';
 // import 'package:provider/provider.dart';
 // import 'package:sizer/sizer.dart';
 
@@ -22,7 +24,7 @@
 // class _BagScreenState extends State<BagScreen> {
 //   double orderAmount = 0;
 //   double orderSaving = 0;
-//   double platformFee = 19.00;
+//   double platformFee = 0;
 //   double orderTotal = 0;
 //   late Future<void> fetchDataFuture;
 //   String clientId = ClientId;
@@ -31,9 +33,7 @@
 //   @override
 //   void initState() {
 //     super.initState();
-
-//     // _calculateTotals();
-//     fetchDataFuture = fetchData(); // Call the API only once
+//     fetchDataFuture = fetchData();
 //   }
 
 //   Future<void> fetchData() async {
@@ -46,72 +46,13 @@
 //     });
 //   }
 
-//   // final List<CartItem> cartItems = [
-//   //   CartItem(
-//   //     brand: 'GAP',
-//   //     name: 'Men Logo Print Zip-Front Hoodie',
-//   //     size: 'L',
-//   //     quantity: 1,
-//   //     price: 1959.00,
-//   //     availableSizes: ['39', '40', '42', '44', '46', '48'],
-//   //     maxQuantity: 10,
-//   //     originalPrice: 2799.00,
-//   //     discount: 30,
-//   //     savings: 840.00,
-//   //     imageUrl: 'images/sale_photo_2.png',
-//   //     leftInStock: 7,
-//   //   ),
-//   //   CartItem(
-//   //     brand: 'LEVIS',
-//   //     name: 'Men Mid-Wash Slim Tapered Fit Jeans',
-//   //     size: '34',
-//   //     quantity: 1,
-//   //     price: 1332.00,
-//   //     availableSizes: ['39', '40', '42', '44', '46', '48'],
-//   //     maxQuantity: 10,
-//   //     originalPrice: 3599.00,
-//   //     discount: 63,
-//   //     savings: 2267.00,
-//   //     imageUrl: 'images/sale_photo_2.png',
-//   //     leftInStock: 1,
-//   //   ),
-//   //   CartItem(
-//   //     brand: 'Kvetoo',
-//   //     name: 'Ribbed High-Neck Pullover',
-//   //     size: 'L',
-//   //     quantity: 1,
-//   //     price: 750.00,
-//   //     availableSizes: ['39', '40', '42', '44', '46', '48'],
-//   //     maxQuantity: 10,
-//   //     originalPrice: 2499.00,
-//   //     discount: 70,
-//   //     savings: 1749.00,
-//   //     imageUrl: 'images/sale_photo_2.png',
-//   //     leftInStock: null,
-//   //   ),
-
-//   //   // Add more CartItem objects here for other products
-//   // ];
-
-//   // void _calculateTotals() {
-//   //   orderAmount = 0;
-//   //   orderSaving = 0;
-//   //   orderTotal = 0;
-
-//   //   for (var item in cartItems) {
-//   //     orderAmount += item.originalPrice * item.quantity;
-//   //     orderSaving += item.savings * item.quantity;
-//   //   }
-
-//   //   orderTotal = orderAmount - orderSaving + platformFee;
-//   // }
-
-//   // void _updateCartItem(int index, CartItem updatedItem) {
-//   //   setState(() {
-//   //     cartItems[index] = updatedItem;
-//   //     _calculateTotals();
-//   //   });
-//   // }
+//   double calculateTotalPrice(CartListViewmodel viewModel) {
+//     double total = 0;
+//     for (var item in viewModel.cartList.data!.cartList!) {
+//       total += (double.parse(item.variantDetails!.price!) * item.qty!.toInt());
+//     }
+//     return total;
+//   }
 
 //   @override
 //   Widget build(BuildContext context) {
@@ -121,21 +62,11 @@
 //     return Scaffold(
 //       appBar: AppBar(
 //         centerTitle: true,
-//         // leading:
-
-//         //     IconButton(
-//         //   icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-//         //   onPressed: () {
-//         //     Navigator.pop(context);
-//         //   },
-//         // ),
 //         backgroundColor: Colors.white,
 //         title: Text(
-//           'Bag products)',
-//           // 'Bag (${cartItems.length} products)',
+//           'Bag products',
 //           style: TextStyle(color: titleFontColor, fontWeight: FontWeight.bold),
 //         ),
-//         // title: Text('Bag (${cartItems.length} products)'),
 //         actions: [
 //           IconButton(
 //             icon: Icon(
@@ -194,156 +125,252 @@
 
 //   Widget _buildCompletedUI(
 //     BuildContext context,
-//     CartListViewmodel customerAddressesViewmodel,
+//     CartListViewmodel cartListViewmodel,
 //   ) {
-//     return Stack(
-//       children: [
-//         SingleChildScrollView(
-//           padding: EdgeInsets.only(bottom: 80),
-//           child: Column(
+//     double totalPrice = calculateTotalPrice(cartListViewmodel);
+
+//     return cartListViewmodel.cartList.data!.cartList!.length != 0
+//         ? Stack(
 //             children: [
-//               ListView.builder(
-//                 shrinkWrap: true,
-//                 physics: NeverScrollableScrollPhysics(),
-//                 itemCount:
-//                     customerAddressesViewmodel.cartList.data!.cartList!.length,
-//                 itemBuilder: (context, index) => CartItemWidget(
-//                   item: customerAddressesViewmodel
-//                       .cartList.data!.cartList![index],
-//                   // onUpdate: (updatedItem) =>
-//                   //     _updateCartItem(index, updatedItem),
-//                 ),
-//               ),
-//               Padding(
-//                 padding: EdgeInsets.all(16),
-//                 child: Center(
-//                   child: Text(
-//                     'Assured Quality | 100% Handpicked | Easy Exchange',
-//                     style: TextStyle(color: Colors.grey.shade500),
-//                   ),
-//                 ),
-//               ),
-//               ListTile(
-//                 leading: Icon(Icons.local_offer),
-//                 title: Text('Apply coupon'),
-//                 trailing: Text('Select', style: TextStyle(color: Colors.blue)),
-//                 onTap: () {},
-//               ),
-//               Padding(
-//                 padding: EdgeInsets.all(16),
-//                 child: Text(
-//                   'Order Payment Details',
-//                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-//                 ),
-//               ),
-//               OrderSummaryItem(
-//                   'Order Amount', '₹ ${orderAmount.toStringAsFixed(2)}'),
-//               OrderSummaryItem(
-//                   'Order Saving', '- ₹ ${orderSaving.toStringAsFixed(2)}',
-//                   isGreen: true),
-//               OrderSummaryItem('Convenience Fee', ''),
-//               Padding(
-//                 padding: EdgeInsets.symmetric(horizontal: 16),
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               SingleChildScrollView(
+//                 padding: EdgeInsets.only(bottom: 80),
+//                 child: Column(
 //                   children: [
-//                     Text('Delivery Fee'),
-//                     Row(
-//                       children: [
-//                         Text('Free', style: TextStyle(color: Colors.green)),
-//                         SizedBox(width: 5),
-//                         Text(
-//                           '₹ 99.00',
-//                           style:
-//                               TextStyle(decoration: TextDecoration.lineThrough),
-//                         ),
-//                       ],
+//                     ListView.builder(
+//                       shrinkWrap: true,
+//                       physics: NeverScrollableScrollPhysics(),
+//                       itemCount:
+//                           cartListViewmodel.cartList.data!.cartList!.length,
+//                       itemBuilder: (context, index) => CartItemWidget(
+//                         item: cartListViewmodel.cartList.data!.cartList![index],
+//                         onRemove: () {
+//                           setState(() {
+//                             cartListViewmodel.cartList.data!.cartList!
+//                                 .removeAt(index);
+//                           });
+//                         },
+//                       ),
 //                     ),
+//                     Column(children: [
+//                       Padding(
+//                         padding: EdgeInsets.all(16),
+//                         child: Center(
+//                           child: Text(
+//                             'Assured Quality | 100% Handpicked | Easy Exchange',
+//                             style: TextStyle(color: Colors.grey.shade500),
+//                           ),
+//                         ),
+//                       ),
+//                       ListTile(
+//                         leading: Icon(Icons.local_offer),
+//                         title: Text('Apply coupon'),
+//                         trailing: Text('Select',
+//                             style: TextStyle(color: Colors.blue)),
+//                         onTap: () {},
+//                       ),
+//                       Padding(
+//                         padding: EdgeInsets.all(16),
+//                         child: Text(
+//                           'Order Payment Details',
+//                           style: TextStyle(
+//                               fontSize: 18, fontWeight: FontWeight.bold),
+//                         ),
+//                       ),
+//                       OrderSummaryItem(
+//                           'Order Amount', '₹ ${totalPrice.toStringAsFixed(2)}'),
+//                       OrderSummaryItem('Order Saving',
+//                           '- ₹ ${orderSaving.toStringAsFixed(2)}',
+//                           isGreen: true),
+//                       OrderSummaryItem('Convenience Fee', ''),
+//                       Padding(
+//                         padding: EdgeInsets.symmetric(horizontal: 16),
+//                         child: Row(
+//                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                           children: [
+//                             Text('Delivery Fee'),
+//                             Row(
+//                               children: [
+//                                 Text('Free',
+//                                     style: TextStyle(color: Colors.green)),
+//                                 SizedBox(width: 5),
+//                                 Text(
+//                                   '₹ 99.00',
+//                                   style: TextStyle(
+//                                       decoration: TextDecoration.lineThrough),
+//                                 ),
+//                               ],
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                       OrderSummaryItem('Platform Fee',
+//                           '₹ ${platformFee.toStringAsFixed(2)}'),
+//                       Divider(),
+//                       OrderSummaryItem('Order Total',
+//                           '₹ ${(totalPrice + platformFee).toStringAsFixed(2)}',
+//                           isBold: true),
+//                       Container(
+//                         padding: EdgeInsets.all(16),
+//                         color: Colors.green[50],
+//                         child: Center(
+//                           child: Text(
+//                             'Cheers! You saved ₹ ${orderSaving.toStringAsFixed(2)}',
+//                             style: TextStyle(color: Colors.green),
+//                           ),
+//                         ),
+//                       ),
+//                     ]),
 //                   ],
 //                 ),
 //               ),
-//               OrderSummaryItem(
-//                   'Platform Fee', '₹ ${platformFee.toStringAsFixed(2)}'),
-//               Divider(),
-//               OrderSummaryItem(
-//                   'Order Total', '₹ ${orderTotal.toStringAsFixed(2)}',
-//                   isBold: true),
-//               Container(
-//                 padding: EdgeInsets.all(16),
-//                 color: Colors.green[50],
-//                 child: Center(
-//                   child: Text(
-//                     'Cheers! You saved ₹ ${orderSaving.toStringAsFixed(2)}',
-//                     style: TextStyle(color: Colors.green),
+//               Positioned(
+//                 left: 0,
+//                 right: 0,
+//                 bottom: 0,
+//                 child: Container(
+//                   padding: EdgeInsets.all(16),
+//                   color: Colors.white,
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         mainAxisSize: MainAxisSize.min,
+//                         children: [
+//                           Text(
+//                             '₹ ${(totalPrice + platformFee).toStringAsFixed(2)}',
+//                             style: TextStyle(
+//                                 fontSize: 18, fontWeight: FontWeight.bold),
+//                           ),
+//                           Text('View details',
+//                               style: TextStyle(color: Colors.blue)),
+//                         ],
+//                       ),
+//                       ElevatedButton(
+//                         child: Text(
+//                           'Proceed to Payment',
+//                           style: TextStyle(fontSize: 14.sp),
+//                         ),
+//                         style: ElevatedButton.styleFrom(
+//                           shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(30)),
+//                           primary: Colors.red,
+//                           padding: EdgeInsets.symmetric(
+//                             horizontal: 45.0,
+//                             vertical: 12.0,
+//                           ),
+//                         ),
+//                         onPressed: () {
+//                           Navigator.push(
+//                             context,
+//                             MaterialPageRoute(
+//                                 builder: (context) =>
+//                                     OrderConfirmationScreen()),
+//                           );
+//                         },
+//                       ),
+//                     ],
 //                   ),
 //                 ),
 //               ),
 //             ],
-//           ),
-//         ),
-//         Positioned(
-//           left: 0,
-//           right: 0,
-//           bottom: 0,
-//           child: Container(
-//             padding: EdgeInsets.all(16),
-//             color: Colors.white,
-//             child: Row(
+//           )
+//         : EmptyCartPage();
+//   }
+// }
+
+// class EmptyCartPage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Spacer(),
+//             Text(
+//               'Your Bag is Empty!',
+//               style: TextStyle(
+//                 fontSize: 24,
+//                 fontWeight: FontWeight.bold,
+//                 color: Colors.black87,
+//               ),
+//             ),
+//             SizedBox(height: 10),
+//             Text(
+//               'You have products in your Wishlist waiting to be yours',
+//               textAlign: TextAlign.center,
+//               style: TextStyle(
+//                 fontSize: 16,
+//                 color: Colors.black54,
+//               ),
+//             ),
+//             SizedBox(height: 30),
+//             Spacer(),
+//             Row(
 //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //               children: [
-//                 Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   mainAxisSize: MainAxisSize.min,
-//                   children: [
-//                     Text(
-//                       '₹ ${orderTotal.toStringAsFixed(2)}',
-//                       style:
-//                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+//                 OutlinedButton(
+//                   onPressed: () {
+//                     // Handle continue shopping action
+//                   },
+//                   style: OutlinedButton.styleFrom(
+//                     padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(20),
 //                     ),
-//                     Text('View details', style: TextStyle(color: Colors.blue)),
-//                   ],
+//                   ),
+//                   child: Text(
+//                     'Continue Shopping',
+//                     style: TextStyle(
+//                       fontSize: 16,
+//                       color: Colors.black,
+//                     ),
+//                   ),
 //                 ),
 //                 ElevatedButton(
-//                   child: Text(
-//                     'Proceed to Payment',
-//                     style: TextStyle(fontSize: 14.sp),
-//                   ),
+//                   onPressed: () {
+//                     // Handle add from wishlist action
+//                   },
 //                   style: ElevatedButton.styleFrom(
+//                     primary: Colors.black,
+//                     padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
 //                     shape: RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.circular(30)),
-//                     primary: Colors.red,
-//                     padding: EdgeInsets.symmetric(
-//                       horizontal: 45.0,
-//                       vertical: 12.0,
+//                       borderRadius: BorderRadius.circular(20),
 //                     ),
 //                   ),
-//                   onPressed: () {
-//                     Navigator.push(
-//                       context,
-//                       MaterialPageRoute(
-//                           builder: (context) => OrderConfirmationScreen()),
-//                     );
-//                   },
+//                   child: Text(
+//                     'Add from Wishlist',
+//                     style: TextStyle(
+//                       fontSize: 16,
+//                       color: Colors.white,
+//                     ),
+//                   ),
 //                 ),
 //               ],
 //             ),
-//           ),
+//           ],
 //         ),
-//       ],
+//       ),
 //     );
 //   }
 // }
 
 // class CartItemWidget extends StatelessWidget {
 //   final CartList item;
-//   // final Function(CartItem) onUpdate;
+//   final Function onRemove;
 
-//   CartItemWidget({required this.item
-//       // , required this.onUpdate
-//       });
+//   CartItemWidget({required this.item, required this.onRemove});
+//   String convertLocalhost(String url) {
+//     return url.replaceAll('http://localhost:8000', ngrokUrl);
+//   }
 
 //   @override
 //   Widget build(BuildContext context) {
+//     double itemTotal =
+//         double.parse(item.variantDetails!.price!) * item.qty!.toInt();
+
 //     return Card(
 //       margin: EdgeInsets.all(8),
 //       child: Padding(
@@ -353,8 +380,9 @@
 //           children: [
 //             Row(
 //               children: [
-//                 // Image.asset(item.variantDetails!.variantImage.toString(),
-//                 Image.asset('images/sale_photo_2.png',
+//                 Image.network(
+//                     convertLocalhost(
+//                         item.variantDetails!.variantImage.toString()),
 //                     width: 100,
 //                     height: 150,
 //                     fit: BoxFit.cover,
@@ -365,9 +393,9 @@
 //                   child: Column(
 //                     crossAxisAlignment: CrossAxisAlignment.start,
 //                     children: [
-//                       Text(item.customerDetails!.customerName.toString(),
+//                       Text(item.productDetails!.productName.toString(),
 //                           style: TextStyle(fontWeight: FontWeight.bold)),
-//                       Text(item.productDetails!.productName.toString()),
+//                       Text(item.clientDetails!.companyName.toString()),
 //                       Row(
 //                         children: [
 //                           GestureDetector(
@@ -412,28 +440,13 @@
 //                             children: [
 //                               Row(
 //                                 children: [
-//                                   Text('₹ ${(item.variantDetails!.price!)}',
-//                                       // '₹ ${(item.variantDetails!.price! * item.qty.toInt()).toStringAsFixed(2)}',
+//                                   Text('₹ ${itemTotal.toStringAsFixed(2)}',
 //                                       style: TextStyle(
 //                                           fontWeight: FontWeight.bold)),
 //                                   SizedBox(width: 1.w),
-//                                   // Text(
-//                                   //     '₹ ${(item.originalPrice * item.quantity).toStringAsFixed(2)}',
-//                                   //     style: TextStyle(
-//                                   //         decoration:
-//                                   //             TextDecoration.lineThrough,
-//                                   //         color: Colors.grey.shade400)),
-//                                   SizedBox(width: 1.w),
-//                                   // Text('(${item.discount}%)',
-//                                   //     style: TextStyle(
-//                                   //         color: Colors.grey.shade400)),
 //                                 ],
 //                               ),
 //                               SizedBox(height: 1.h),
-//                               // Text(
-//                               //     'You save ₹ ${(item.savings * item.quantity).toStringAsFixed(2)}',
-//                               //     style:
-//                               //         TextStyle(color: Colors.green.shade700)),
 //                             ],
 //                           ),
 //                         ],
@@ -451,7 +464,22 @@
 //               alignment: Alignment.topRight,
 //               child: TextButton(
 //                 child: Text('Remove'),
-//                 onPressed: () {},
+//                 onPressed: () async {
+//                   Map<String, String> data = {
+//                     'clientId': ClientId,
+//                     'id': item.id.toString(),
+//                     'isDelete': 'Yes',
+//                   };
+
+//                   final deleteCartViewModel =
+//                       Provider.of<DeleteCartViewModel>(context, listen: false);
+
+//                   bool success = await deleteCartViewModel.deleteCartApi(
+//                       IpAddress.toString(), data, context);
+//                   if (success) {
+//                     onRemove(); // Call the onRemove callback
+//                   }
+//                 },
 //               ),
 //             ),
 //           ],
@@ -459,180 +487,9 @@
 //       ),
 //     );
 //   }
-
-//   // void _showSizeSelector(BuildContext context) {
-//   //   showModalBottomSheet(
-//   //     context: context,
-//   //     builder: (BuildContext context) {
-//   //       return SizeSelectorSheet(
-//   //         currentSize: item.size,
-//   //         availableSizes: item.availableSizes,
-//   //         onSizeSelected: (newSize) {
-//   //           Navigator.pop(context);
-//   //           onUpdate(item.copyWith(size: newSize));
-//   //         },
-//   //       );
-//   //     },
-//   //   );
-//   // }
-
-//   // void _showQuantitySelector(BuildContext context) {
-//   //   showModalBottomSheet(
-//   //     context: context,
-//   //     builder: (BuildContext context) {
-//   //       return QuantitySelectorSheet(
-//   //         currentQuantity: item.quantity,
-//   //         maxQuantity: item.maxQuantity,
-//   //         leftInStock: item.leftInStock,
-//   //         onQuantitySelected: (newQuantity) {
-//   //           Navigator.pop(context);
-//   //           final updatedItem = item.copyWith(quantity: newQuantity);
-//   //           onUpdate(updatedItem);
-//   //         },
-//   //       );
-//   //     },
-//   //   );
-//   // }
 // }
 
-// class SizeSelectorSheet extends StatelessWidget {
-//   final String currentSize;
-//   final List<String> availableSizes;
-//   final Function(String) onSizeSelected;
-
-//   SizeSelectorSheet(
-//       {required this.currentSize,
-//       required this.availableSizes,
-//       required this.onSizeSelected});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: EdgeInsets.all(16),
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           Text('Select Size',
-//               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-//           SizedBox(height: 16),
-//           Wrap(
-//             spacing: 8,
-//             runSpacing: 8,
-//             children: availableSizes
-//                 .map((size) => ElevatedButton(
-//                       child: Text(size),
-//                       style: ElevatedButton.styleFrom(
-//                         primary:
-//                             size == currentSize ? Colors.black : Colors.white,
-//                         onPrimary:
-//                             size == currentSize ? Colors.white : Colors.black,
-//                       ),
-//                       onPressed: () => onSizeSelected(size),
-//                     ))
-//                 .toList(),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// class QuantitySelectorSheet extends StatefulWidget {
-//   final int currentQuantity;
-//   final int maxQuantity;
-//   final int? leftInStock;
-//   final Function(int) onQuantitySelected;
-
-//   QuantitySelectorSheet({
-//     required this.currentQuantity,
-//     required this.maxQuantity,
-//     this.leftInStock,
-//     required this.onQuantitySelected,
-//   });
-
-//   @override
-//   State<QuantitySelectorSheet> createState() => _QuantitySelectorSheetState();
-// }
-
-// class _QuantitySelectorSheetState extends State<QuantitySelectorSheet> {
-//   late int _quantity;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _quantity = widget.currentQuantity;
-//   }
-
-//   void _incrementQuantity() {
-//     if (_quantity < (widget.leftInStock ?? widget.maxQuantity)) {
-//       setState(() {
-//         _quantity++;
-//       });
-//     }
-//   }
-
-//   void _decrementQuantity() {
-//     if (_quantity > 1) {
-//       setState(() {
-//         _quantity--;
-//       });
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: EdgeInsets.all(16),
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           Text('Select Quantity',
-//               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-//           SizedBox(height: 16),
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               IconButton(
-//                 icon: Icon(Icons.remove),
-//                 onPressed: _quantity > 1 ? _decrementQuantity : null,
-//               ),
-//               Text(_quantity.toString(), style: TextStyle(fontSize: 20)),
-//               IconButton(
-//                 icon: Icon(Icons.add),
-//                 onPressed:
-//                     _quantity < (widget.leftInStock ?? widget.maxQuantity)
-//                         ? _incrementQuantity
-//                         : null,
-//               ),
-//             ],
-//           ),
-//           if (widget.leftInStock != null && widget.leftInStock! <= 5)
-//             Text('${widget.leftInStock} left',
-//                 style: TextStyle(color: Colors.red)),
-//           SizedBox(height: 16),
-//           ElevatedButton(
-//             child: Text('Update'),
-//             style: ElevatedButton.styleFrom(
-//               shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(30)),
-//               primary: Colors.red,
-//               padding: EdgeInsets.symmetric(
-//                 horizontal: 45.0,
-//                 vertical: 12.0,
-//               ),
-//             ),
-//             onPressed: () {
-//               widget.onQuantitySelected(_quantity);
-//               // Navigator.pop(context);
-//             },
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// class OrderSummaryItem extends StatefulWidget {
+// class OrderSummaryItem extends StatelessWidget {
 //   final String title;
 //   final String value;
 //   final bool isGreen;
@@ -642,82 +499,23 @@
 //       {this.isGreen = false, this.isBold = false});
 
 //   @override
-//   State<OrderSummaryItem> createState() => _OrderSummaryItemState();
-// }
-
-// class _OrderSummaryItemState extends State<OrderSummaryItem> {
-//   @override
 //   Widget build(BuildContext context) {
 //     return Padding(
 //       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
 //       child: Row(
 //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //         children: [
-//           Text(widget.title),
+//           Text(title),
 //           Text(
-//             widget.value,
+//             value,
 //             style: TextStyle(
-//               color: widget.isGreen ? Colors.green : null,
-//               fontWeight: widget.isBold ? FontWeight.bold : null,
+//               color: isGreen ? Colors.green : null,
+//               fontWeight: isBold ? FontWeight.bold : null,
 //             ),
 //           ),
 //         ],
 //       ),
 //     );
-//   }
-// }
-
-// class CartItem {
-//   final String brand;
-//   final String name;
-//   final String size;
-//   int quantity;
-//   final double price;
-//   final List<String> availableSizes;
-//   final int maxQuantity;
-//   final double originalPrice;
-//   final int discount;
-//   final double savings;
-//   final String imageUrl;
-//   final int? leftInStock;
-
-//   CartItem({
-//     required this.brand,
-//     required this.name,
-//     required this.size,
-//     required this.quantity,
-//     required this.price,
-//     required this.availableSizes,
-//     required this.maxQuantity,
-//     required this.originalPrice,
-//     required this.discount,
-//     required this.savings,
-//     required this.imageUrl,
-//     required this.leftInStock,
-//   });
-
-//   CartItem copyWith({
-//     String? size,
-//     int? quantity,
-//   }) {
-//     return CartItem(
-//       brand: this.brand,
-//       name: this.name,
-//       size: size ?? this.size,
-//       quantity: quantity ?? this.quantity,
-//       price: this.price,
-//       availableSizes: this.availableSizes,
-//       maxQuantity: this.maxQuantity,
-//       originalPrice: this.originalPrice,
-//       discount: this.discount,
-//       savings: this.savings,
-//       imageUrl: this.imageUrl,
-//       leftInStock: this.leftInStock,
-//     );
-//   }
-
-//   void updateQuantity(int newQuantity) {
-//     quantity = newQuantity;
 //   }
 // }
 
@@ -732,6 +530,7 @@ import 'package:ecommerce/Utils/utils.dart';
 import 'package:ecommerce/View/Bag/BagScreen/orderConfirmationScreen.dart';
 import 'package:ecommerce/View_Model/CartList_View_Model/cartList_view_model.dart';
 import 'package:ecommerce/View_Model/CartList_View_Model/deleteCart_view_model.dart';
+import 'package:ecommerce/View_Model/CartList_View_Model/editCart_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
@@ -787,7 +586,7 @@ class _BagScreenState extends State<BagScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         title: Text(
-          'Bag products)',
+          'Bag products',
           style: TextStyle(color: titleFontColor, fontWeight: FontWeight.bold),
         ),
         actions: [
@@ -848,158 +647,397 @@ class _BagScreenState extends State<BagScreen> {
 
   Widget _buildCompletedUI(
     BuildContext context,
-    CartListViewmodel customerAddressesViewmodel,
+    CartListViewmodel cartListViewmodel,
   ) {
-    double totalPrice = calculateTotalPrice(customerAddressesViewmodel);
+    double totalPrice = calculateTotalPrice(cartListViewmodel);
 
-    return Stack(
-      children: [
-        SingleChildScrollView(
-          padding: EdgeInsets.only(bottom: 80),
-          child: Column(
+    return cartListViewmodel.cartList.data!.cartList!.length != 0
+        ? Stack(
             children: [
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount:
-                    customerAddressesViewmodel.cartList.data!.cartList!.length,
-                itemBuilder: (context, index) => CartItemWidget(
-                  item: customerAddressesViewmodel
-                      .cartList.data!.cartList![index],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(16),
-                child: Center(
-                  child: Text(
-                    'Assured Quality | 100% Handpicked | Easy Exchange',
-                    style: TextStyle(color: Colors.grey.shade500),
-                  ),
-                ),
-              ),
-              ListTile(
-                leading: Icon(Icons.local_offer),
-                title: Text('Apply coupon'),
-                trailing: Text('Select', style: TextStyle(color: Colors.blue)),
-                onTap: () {},
-              ),
-              Padding(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  'Order Payment Details',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-              OrderSummaryItem(
-                  'Order Amount', '₹ ${totalPrice.toStringAsFixed(2)}'),
-              OrderSummaryItem(
-                  'Order Saving', '- ₹ ${orderSaving.toStringAsFixed(2)}',
-                  isGreen: true),
-              OrderSummaryItem('Convenience Fee', ''),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              SingleChildScrollView(
+                padding: EdgeInsets.only(bottom: 80),
+                child: Column(
                   children: [
-                    Text('Delivery Fee'),
-                    Row(
-                      children: [
-                        Text('Free', style: TextStyle(color: Colors.green)),
-                        SizedBox(width: 5),
-                        Text(
-                          '₹ 99.00',
-                          style:
-                              TextStyle(decoration: TextDecoration.lineThrough),
-                        ),
-                      ],
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount:
+                          cartListViewmodel.cartList.data!.cartList!.length,
+                      itemBuilder: (context, index) => CartItemWidget(
+                        item: cartListViewmodel.cartList.data!.cartList![index],
+                        onRemove: () {
+                          setState(() {
+                            cartListViewmodel.cartList.data!.cartList!
+                                .removeAt(index);
+                          });
+                        },
+                        onQuantityChanged: (newQuantity) {
+                          setState(() async {
+                            cartListViewmodel.cartList.data!.cartList![index]
+                                .qty = newQuantity.toString();
+                            Map<String, String> data = {
+                              'clientId': ClientId,
+                              'id': cartListViewmodel
+                                  .cartList.data!.cartList![index].id
+                                  .toString(),
+                              'qty': newQuantity.toString(),
+                              'created_by': createdBy,
+                            };
+
+                            final editCartViewModel =
+                                Provider.of<EditCartViewModel>(context,
+                                    listen: false);
+
+                            bool success = await editCartViewModel.editCartApi(
+                              IpAddress.toString(),
+                              data,
+                              context,
+                            );
+
+                            if (success) {
+                              // widget.onRemove();
+                            }
+
+                            print(
+                                "cartListViewmodelcartListViewmodelcartListViewmodelcartListViewmodelcartListViewmodel");
+                            print(newQuantity.toString());
+                            print(
+                                "cartListViewmodelcartListViewmodelcartListViewmodelcartListViewmodel");
+                          });
+                          // You may want to update the cart on the server here
+                        },
+                      ),
                     ),
+                    Column(children: [
+                      Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Center(
+                          child: Text(
+                            'Assured Quality | 100% Handpicked | Easy Exchange',
+                            style: TextStyle(color: Colors.grey.shade500),
+                          ),
+                        ),
+                      ),
+                      ApplyCouponWidget(),
+
+                      // ListTile(
+                      //   leading: Icon(Icons.local_offer),
+                      //   title: Text('Apply coupon'),
+                      //   trailing: Text('Select',
+                      //       style: TextStyle(color: Colors.blue)),
+                      //   onTap: () {},
+                      // ),
+                      Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Text(
+                          'Order Payment Details',
+                          style: TextStyle(
+                              fontSize: 14.sp, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      OrderSummaryItem(
+                          'Order Amount', '₹ ${totalPrice.toStringAsFixed(2)}'),
+                      OrderSummaryItem('Order Saving',
+                          '- ₹ ${orderSaving.toStringAsFixed(2)}',
+                          isGreen: true),
+                      OrderSummaryItem('Convenience Fee', ''),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Delivery Fee'),
+                            Row(
+                              children: [
+                                Text('Free',
+                                    style: TextStyle(color: Colors.green)),
+                                SizedBox(width: 5),
+                                Text(
+                                  '₹ 99.00',
+                                  style: TextStyle(
+                                      decoration: TextDecoration.lineThrough),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      OrderSummaryItem('Platform Fee',
+                          '₹ ${platformFee.toStringAsFixed(2)}'),
+                      Divider(),
+                      OrderSummaryItem('Order Total',
+                          '₹ ${(totalPrice + platformFee).toStringAsFixed(2)}',
+                          isBold: true),
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        color: Colors.green[50],
+                        child: Center(
+                          child: Text(
+                            'Cheers! You saved ₹ ${orderSaving.toStringAsFixed(2)}',
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ),
+                      ),
+                    ]),
                   ],
                 ),
               ),
-              OrderSummaryItem(
-                  'Platform Fee', '₹ ${platformFee.toStringAsFixed(2)}'),
-              Divider(),
-              OrderSummaryItem('Order Total',
-                  '₹ ${(totalPrice + platformFee).toStringAsFixed(2)}',
-                  isBold: true),
-              Container(
-                padding: EdgeInsets.all(16),
-                color: Colors.green[50],
-                child: Center(
-                  child: Text(
-                    'Cheers! You saved ₹ ${orderSaving.toStringAsFixed(2)}',
-                    style: TextStyle(color: Colors.green),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  color: Colors.white,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '₹ ${(totalPrice + platformFee).toStringAsFixed(2)}',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          Text('View details',
+                              style: TextStyle(color: Colors.blue)),
+                        ],
+                      ),
+                      ElevatedButton(
+                        child: Text(
+                          'Proceed to Payment',
+                          style: TextStyle(fontSize: 14.sp),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30)),
+                          primary: Colors.red,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 45.0,
+                            vertical: 12.0,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    OrderConfirmationScreen()),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
             ],
+          )
+        : EmptyCartPage();
+  }
+}
+
+class ApplyCouponWidget extends StatefulWidget {
+  const ApplyCouponWidget({Key? key}) : super(key: key);
+
+  @override
+  _ApplyCouponWidgetState createState() => _ApplyCouponWidgetState();
+}
+
+class _ApplyCouponWidgetState extends State<ApplyCouponWidget> {
+  final TextEditingController _couponController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 8.0),
+            child: Text(
+              'Apply Coupon',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
-        ),
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: Container(
-            padding: EdgeInsets.all(16),
-            color: Colors.white,
+          Container(
+            margin: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(8.0),
+            ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '₹ ${(totalPrice + platformFee).toStringAsFixed(2)}',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Expanded(
+                  child: TextField(
+                    controller: _couponController,
+                    decoration: const InputDecoration(
+                      hintText: 'Please enter a valid coupon code',
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                     ),
-                    Text('View details', style: TextStyle(color: Colors.blue)),
-                  ],
+                  ),
                 ),
-                ElevatedButton(
+                TextButton(
+                  onPressed: () {
+                    // Add your coupon application logic here
+                    print('Applying coupon: ${_couponController.text}');
+                  },
                   child: Text(
-                    'Proceed to Payment',
-                    style: TextStyle(fontSize: 14.sp),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
-                    primary: Colors.red,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 45.0,
-                      vertical: 12.0,
+                    'Apply',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => OrderConfirmationScreen()),
-                    );
-                  },
                 ),
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _couponController.dispose();
+    super.dispose();
+  }
+}
+
+class EmptyCartPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Spacer(),
+            Text(
+              'Your Bag is Empty!',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'You have products in your Wishlist waiting to be yours',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black54,
+              ),
+            ),
+            SizedBox(height: 30),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                OutlinedButton(
+                  onPressed: () {
+                    // Handle continue shopping action
+                  },
+                  style: OutlinedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Text(
+                    'Continue Shopping',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // Handle add from wishlist action
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.black,
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Text(
+                    'Add from Wishlist',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
 
-class CartItemWidget extends StatelessWidget {
+class CartItemWidget extends StatefulWidget {
   final CartList item;
+  final Function onRemove;
+  final Function(int) onQuantityChanged;
 
-  CartItemWidget({required this.item});
+  CartItemWidget({
+    required this.item,
+    required this.onRemove,
+    required this.onQuantityChanged,
+  });
+
+  @override
+  _CartItemWidgetState createState() => _CartItemWidgetState();
+}
+
+class _CartItemWidgetState extends State<CartItemWidget> {
+  late int quantity;
+
+  @override
+  void initState() {
+    super.initState();
+    quantity = widget.item.qty!.toInt();
+  }
+
   String convertLocalhost(String url) {
     return url.replaceAll('http://localhost:8000', ngrokUrl);
+  }
+
+  void _incrementQuantity() {
+    if (quantity < widget.item.productDetails!.maxQuantity.toInt()) {
+      setState(() {
+        quantity++;
+      });
+      widget.onQuantityChanged(quantity);
+    }
+  }
+
+  void _decrementQuantity() {
+    if (quantity > widget.item.productDetails!.minQuantity.toInt()) {
+      setState(() {
+        quantity--;
+      });
+      widget.onQuantityChanged(quantity);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     double itemTotal =
-        double.parse(item.variantDetails!.price!) * item.qty!.toInt();
+        double.parse(widget.item.variantDetails!.price!) * quantity;
 
     return Card(
       margin: EdgeInsets.all(8),
@@ -1011,27 +1049,25 @@ class CartItemWidget extends StatelessWidget {
             Row(
               children: [
                 Image.network(
-                    convertLocalhost(
-                        item.variantDetails!.variantImage.toString()),
-                    width: 100,
-                    height: 150,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        Icon(Icons.error)),
-                // Image.asset('images/sale_photo_2.png',
-                //     width: 100,
-                //     height: 150,
-                //     fit: BoxFit.cover,
-                //     errorBuilder: (context, error, stackTrace) =>
-                //         Icon(Icons.error)),
+                  convertLocalhost(
+                    widget.item.variantDetails!.variantImage.toString(),
+                  ),
+                  width: 100,
+                  height: 150,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      Icon(Icons.error),
+                ),
                 SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(item.productDetails!.productName.toString(),
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text(item.clientDetails!.companyName.toString()),
+                      Text(
+                        widget.item.productDetails!.productName.toString(),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(widget.item.clientDetails!.companyName.toString()),
                       Row(
                         children: [
                           GestureDetector(
@@ -1039,32 +1075,90 @@ class CartItemWidget extends StatelessWidget {
                               // _showSizeSelector(context);
                             },
                             child: Chip(
-                                padding: EdgeInsets.all(0),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5)),
-                                label: Row(
-                                  children: [
-                                    Text(
-                                        'Size ${item.variantDetails!.variantkey}'),
-                                    Icon(Icons.arrow_drop_down)
-                                  ],
-                                )),
+                              padding: EdgeInsets.all(0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              label: Row(
+                                children: [
+                                  Text(
+                                    '${widget.item.variantDetails!.variantkey}',
+                                  ),
+                                  // Icon(Icons.arrow_drop_down),
+                                ],
+                              ),
+                            ),
                           ),
                           SizedBox(width: 8),
-                          GestureDetector(
-                            onTap: () {
-                              // _showQuantitySelector(context);
-                            },
-                            child: Chip(
-                                padding: EdgeInsets.all(0),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5)),
-                                label: Row(
+                          // Row(
+                          //   children: [
+                          //     IconButton(
+                          //       icon: Icon(Icons.remove),
+                          //       onPressed: _decrementQuantity,
+                          //     ),
+                          //     Text('$quantity'),
+                          //     IconButton(
+                          //       icon: Icon(Icons.add),
+                          //       onPressed: _incrementQuantity,
+                          //     ),
+                          //   ],
+                          // ),
+
+                          Row(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
                                   children: [
-                                    Text('Qty ${item.qty}'),
-                                    Icon(Icons.arrow_drop_down)
+                                    GestureDetector(
+                                      onTap: _decrementQuantity,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.horizontal(
+                                              left: Radius.circular(20)),
+                                          border: Border.all(
+                                              color: Colors.grey[300]!),
+                                        ),
+                                        child: Icon(Icons.remove,
+                                            size: 18, color: Colors.grey[700]),
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 4),
+                                      child: Text(
+                                        '$quantity',
+                                        style: TextStyle(
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: _incrementQuantity,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.horizontal(
+                                              right: Radius.circular(20)),
+                                          border: Border.all(
+                                              color: Colors.grey[300]!),
+                                        ),
+                                        child: Icon(Icons.add,
+                                            size: 18, color: Colors.grey[700]),
+                                      ),
+                                    ),
                                   ],
-                                )),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -1076,9 +1170,12 @@ class CartItemWidget extends StatelessWidget {
                             children: [
                               Row(
                                 children: [
-                                  Text('₹ ${itemTotal.toStringAsFixed(2)}',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
+                                  Text(
+                                    '₹ ${itemTotal.toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                   SizedBox(width: 1.w),
                                 ],
                               ),
@@ -1100,20 +1197,24 @@ class CartItemWidget extends StatelessWidget {
               alignment: Alignment.topRight,
               child: TextButton(
                 child: Text('Remove'),
-                onPressed: () {
-
-                   Map<String, String> data = {
+                onPressed: () async {
+                  Map<String, String> data = {
                     'clientId': ClientId,
-                    'id':item.id.toString() ,
+                    'id': widget.item.id.toString(),
                     'isDelete': 'Yes',
                   };
-
 
                   final deleteCartViewModel =
                       Provider.of<DeleteCartViewModel>(context, listen: false);
 
-                  deleteCartViewModel.deleteCartApi(
-                      IpAddress.toString(), data, context);   
+                  bool success = await deleteCartViewModel.deleteCartApi(
+                    IpAddress.toString(),
+                    data,
+                    context,
+                  );
+                  if (success) {
+                    widget.onRemove();
+                  }
                 },
               ),
             ),

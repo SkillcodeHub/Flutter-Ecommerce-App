@@ -184,54 +184,111 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     // Assuming the API response is stored in wishListViewmodel.wishList.data
     final wishlistItems = wishListViewmodel.wishList.data!.wishList;
 
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.60,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-      ),
-      padding: EdgeInsets.all(8),
-      itemCount: wishlistItems!.length,
-      itemBuilder: (context, index) {
-        final item = wishlistItems[index];
+    return wishListViewmodel.wishList.data!.wishList!.length != 0
+        ? GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.60,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+            ),
+            padding: EdgeInsets.all(8),
+            itemCount: wishlistItems!.length,
+            itemBuilder: (context, index) {
+              final item = wishlistItems[index];
 
-        List<String> imageUrls = [];
-        try {
-          imageUrls = List<String>.from(
-              jsonDecode(item.productDetails!.productGallery.toString()));
-        } catch (e) {
-          print('Error parsing image URLs: $e');
-        }
+              List<String> imageUrls = [];
+              try {
+                imageUrls = List<String>.from(
+                    jsonDecode(item.productDetails!.productGallery.toString()));
+              } catch (e) {
+                print('Error parsing image URLs: $e');
+              }
 
-        String firstImageUrl = imageUrls.isNotEmpty
-            ? imageUrls.first
-            : 'https://example.com/placeholder.jpg'; // Use a placeholder if no image is available
+              String firstImageUrl = imageUrls.isNotEmpty
+                  ? imageUrls.first
+                  : 'https://example.com/placeholder.jpg'; // Use a placeholder if no image is available
 
-        return WishlistItem(
-          wishId : item.id.toString(),
-          brand: item.clientDetails!.companyName.toString(),
-          name: item.productDetails!.productName.toString(),
-          price: item.productDetails!.productPrice.toString(),
-          originalPrice: item.productDetails!.productPrice.toString(),
-          // discount: item.discount,
-          imageUrl: firstImageUrl,
-          // onDelete: () {
-          //   // Implement delete functionality
-          //   wishListViewmodel.removeFromWishlist(item.id);
-          // },
-          // onAddToBag: () {
-          //   // Implement add to bag functionality
-          //   wishListViewmodel.addToBag(item.id);
-          // },
-        );
-      },
-    );
+              return WishlistItem(
+                wishId: item.id.toString(),
+                brand: item.clientDetails!.companyName.toString(),
+                name: item.productDetails!.productName.toString(),
+                price: item.productDetails!.productPrice.toString(),
+                originalPrice: item.productDetails!.productPrice.toString(),
+                // discount: item.discount,
+                imageUrl: firstImageUrl,
+                // onDelete: () {
+                //   // Implement delete functionality
+                //   wishListViewmodel.removeFromWishlist(item.id);
+                // },
+                // onAddToBag: () {
+                //   // Implement add to bag functionality
+                //   wishListViewmodel.addToBag(item.id);
+                // },
+              );
+            },
+          )
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Spacer(),
+              Icon(
+                Icons.favorite_border,
+                color: Colors.lightBlue,
+                size: 100,
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Your wishlist is empty',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Hang your wishes where you can make them come true.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                ),
+              ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Handle continue shopping action
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.black,
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Continue Shopping',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+            ],
+          );
   }
 }
 
 class WishlistItem extends StatelessWidget {
-    final String wishId;
+  final String wishId;
   final String brand;
   final String name;
   final String price;
@@ -294,9 +351,6 @@ class WishlistItem extends StatelessWidget {
               //     ),
               //   ),
               // ),
-            
-            
-            
             ],
           ),
           Padding(
@@ -344,18 +398,19 @@ class WishlistItem extends StatelessWidget {
                           color: Colors.grey.shade700,
                         ),
                         onPressed: () {
- Map<String, String> data = {
-                    'clientId': ClientId,
-                    'id': wishId.toString(),
-                    'isDelete': 'Yes',
-                  };
+                          Map<String, String> data = {
+                            'clientId': ClientId,
+                            'id': wishId.toString(),
+                            'isDelete': 'Yes',
+                          };
 
+                          final deleteWishListViewModel =
+                              Provider.of<DeleteWishListViewModel>(context,
+                                  listen: false);
 
-                  final deleteWishListViewModel =
-                      Provider.of<DeleteWishListViewModel>(context, listen: false);
-
-                  deleteWishListViewModel.deleteWishListApi(
-                      IpAddress.toString(), data, context);                           },
+                          deleteWishListViewModel.deleteWishListApi(
+                              IpAddress.toString(), data, context);
+                        },
                         padding: EdgeInsets.zero,
                         constraints: BoxConstraints(),
                       ),

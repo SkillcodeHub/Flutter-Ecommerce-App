@@ -3,9 +3,9 @@ class AppUrl {
   // http://localhost:6000/api/
   // static var baseUrl = "http://10.0.2.2:8000/";
   static var baseUrl =
-      "https://5d70-2402-a00-142-4b45-214d-52ed-f094-95a5.ngrok-free.app/";
+      "https://c431-2402-a00-142-4b45-1426-43bc-ef2f-5a8d.ngrok-free.app/";
 
-  // static var baseUrl = "https://www.axonweb.in/api/";
+  // static var   = "https://www.axonweb.in/api/";
   // static var baseUrl = "http://18.188.250.51:7000/api/cms/";
   // static var baseUrl = "https://axon-pro-api.axonsoftwares.net/api/cms/";
   // static var baseUrl = "https://axon-pro-api.axonsoftwares.net/api/cms/";
@@ -69,16 +69,21 @@ class AppUrl {
   // delete cart Url
   static var deleteCartUrl = baseUrl + 'customerportal/deletecart';
 
-    // delete Wish List Url
+  // delete cart Url
+  static var editcartUrl = baseUrl + 'customerportal/editcart';
+
+  // delete Wish List Url
   static var deleteWishListUrl = baseUrl + 'customerportal/deletewishlist';
 
-    // add Wish List Url
+  // add Wish List Url
   static var addWishListUrl = baseUrl + 'customerportal/addwishlist';
-
-
 
   // All Product List Url
   static var allProductListUrl = baseUrl + 'customerportal/allproductlist';
   // Filter Product List Url
   static var filterProductListUrl = baseUrl + 'customerportal/productbyname';
+
+  // check offer coupon validity Url
+  static var checkoffercouponvalidityUrl =
+      baseUrl + 'customerportal/checkoffercouponvalidity';
 }

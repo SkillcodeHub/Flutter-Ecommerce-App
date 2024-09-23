@@ -150,6 +150,12 @@ class ProductDetails {
   String? productPrice;
   String? productStock;
   String? sku;
+  String? minQuantity;
+  String? maxQuantity;
+  int? vendorId;
+  String? vendorStore;
+  String? isDiscountApplicable;
+  String? discountedPercentage;
 
   ProductDetails(
       {this.id,
@@ -164,7 +170,13 @@ class ProductDetails {
       this.productShortDescription,
       this.productPrice,
       this.productStock,
-      this.sku});
+      this.sku,
+      this.minQuantity,
+      this.maxQuantity,
+      this.vendorId,
+      this.vendorStore,
+      this.isDiscountApplicable,
+      this.discountedPercentage});
 
   ProductDetails.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -180,6 +192,12 @@ class ProductDetails {
     productPrice = json['productPrice'];
     productStock = json['productStock'];
     sku = json['sku'];
+    minQuantity = json['minQuantity'];
+    maxQuantity = json['maxQuantity'];
+    vendorId = json['vendorId'];
+    vendorStore = json['vendorStore'];
+    isDiscountApplicable = json['isDiscountApplicable'];
+    discountedPercentage = json['discountedPercentage'];
   }
 
   Map<String, dynamic> toJson() {
@@ -197,6 +215,12 @@ class ProductDetails {
     data['productPrice'] = this.productPrice;
     data['productStock'] = this.productStock;
     data['sku'] = this.sku;
+    data['minQuantity'] = this.minQuantity;
+    data['maxQuantity'] = this.maxQuantity;
+    data['vendorId'] = this.vendorId;
+    data['vendorStore'] = this.vendorStore;
+    data['isDiscountApplicable'] = this.isDiscountApplicable;
+    data['discountedPercentage'] = this.discountedPercentage;
     return data;
   }
 }
